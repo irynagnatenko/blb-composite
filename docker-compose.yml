@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  dynamodb-local-composite:
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local-composite
+    ports:
+      - "8002:8002"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocalcomposite/data"
+    working_dir: /home/dynamodblocalcomposite
+    command: "-jar DynamoDBLocalComposite.jar -sharedDb -dbPath ./data"
+    networks:
+      - my-network
+
+  composite-service:
+    build:
+      context: .
+    ports:
+      - "8086:8086"
+    depends_on:
+      - "dynamodb-local-composite"
+    environment:
+      AWS_DYNAMODB_ENDPOINT: http://dynamodb-local-composite:8002
+      AWS_ACCESS_KEY_ID: 'example'
+      AWS_SECRET_ACCESS_KEY: 'examplekey'
+      AWS_REGION: 'eu-north-1'
+    volumes:
+      - ./:/app
+    networks:
+      - my-network
+    command: ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001"
+
+networks:
+  my-network:
+    driver: bridge
