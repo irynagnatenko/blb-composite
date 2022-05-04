@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
 @DynamoDbBean
-public class Publication {
+public class Publication extends BaseObject {
     @JsonIgnore
     private String id;
     @JsonIgnore
@@ -33,4 +34,8 @@ public class Publication {
         return id;
     }
 
+    @DynamoDbSortKey
+    public String getVersionKey() {
+        return versionKey;
+    }
 }
