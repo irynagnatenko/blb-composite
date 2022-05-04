@@ -1,31 +1,44 @@
 version: '3.8'
 services:
-  dynamodb-local-composite:
+  dynamodb-local:
     image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb-local-composite
+    container_name: dynamodb-local
     ports:
       - "8002:8002"
     volumes:
-      - "./docker/dynamodb:/home/dynamodblocalcomposite/data"
-    working_dir: /home/dynamodblocalcomposite
-    command: "-jar DynamoDBLocalComposite.jar -sharedDb -dbPath ./data"
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data -port 8002"
     networks:
       - my-network
 
-  composite-service:
-    build:
-      context: .
+  aggregator-service:
+    container_name: aggregator-service
+    image: aggregator-service:latest
+    ports:
+      - "8088:8088"
+    environment:
+      - SERVER_PORT=8088
+      - SPRING_PROFILES_ACTIVE=dev
+      - ENV=dev
+    networks:
+      - my-network
+    command: ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001"
+
+  composite-server:
+    container_name: composite-server
+    hostname: composite-server
+    image: composite-server:latest
     ports:
       - "8086:8086"
-    depends_on:
-      - "dynamodb-local-composite"
     environment:
-      AWS_DYNAMODB_ENDPOINT: http://dynamodb-local-composite:8002
-      AWS_ACCESS_KEY_ID: 'example'
-      AWS_SECRET_ACCESS_KEY: 'examplekey'
-      AWS_REGION: 'eu-north-1'
-    volumes:
-      - ./:/app
+      - SERVER_PORT=8086
+      - SPRING_PROFILES_ACTIVE=dev
+      - ENV=dev
+      - AWS_DYNAMODB_ENDPOINT=http://dynamodb-local:8002
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_REGION=eu-north-1
     networks:
       - my-network
     command: ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001"
@@ -33,3 +46,6 @@ services:
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  dynamodb_data:
