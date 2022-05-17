@@ -25,14 +25,33 @@ services:
       - my-network
     command: ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001"
 
-  composite-server:
-    container_name: composite-server
-    hostname: composite-server
-    image: composite-server:latest
+  composite-service:
+    container_name: composite-service
+    hostname: composite-service
+    image: composite-service:latest
     ports:
       - "8086:8086"
     environment:
       - SERVER_PORT=8086
+      - SPRING_PROFILES_ACTIVE=dev
+      - ENV=dev
+      - AWS_DYNAMODB_ENDPOINT=http://dynamodb-local:8002
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_REGION=eu-north-1
+    networks:
+      - my-network
+    command: ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8001"
+
+
+  content-service:
+    container_name: content-service
+    hostname: content-service
+    image: content-service:latest
+    ports:
+      - "8085:8085"
+    environment:
+      - SERVER_PORT=8085
       - SPRING_PROFILES_ACTIVE=dev
       - ENV=dev
       - AWS_DYNAMODB_ENDPOINT=http://dynamodb-local:8002

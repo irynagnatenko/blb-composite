@@ -3,7 +3,6 @@ package se.b3.healthtech.blackbird.blbcomposite.persistence.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import se.b3.healthtech.blackbird.blbcomposite.domain.Container;
-import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteItemEnhancedRequest;

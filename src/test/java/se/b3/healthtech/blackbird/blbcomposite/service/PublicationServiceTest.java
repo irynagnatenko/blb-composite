@@ -16,6 +16,8 @@ import se.b3.healthtech.blackbird.blbcomposite.persistence.service.PublicationDb
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -69,6 +71,11 @@ class PublicationServiceTest {
         c1.setCreatedBy("iryna");
         c1.setCreated(1000L);
         c1.setOrdinal(1);
+        c1.setVersionNumber(1);
+        c1.setCommitNumber(1);
+
+        // lägga till ett objekt till
+        // kan även testa varje attribut på container
 
         assertNull(c1.getId());
         assertNull(c1.getVersionKey());
@@ -79,13 +86,15 @@ class PublicationServiceTest {
         List<Container> resultList = publicationService.createContainersList(expectedList);
 
         assertEquals(expectedList.size(),resultList.size());
-        assertEquals(expectedList, resultList);
 
         Container actual = resultList.get(0);
         assertNotNull(actual.getId());
         assertNotNull(actual.getVersionKey());
         assertEquals(c1.getUuid(), actual.getUuid());
         assertTrue(actual.getVersionKey().contains("CONTAINER"));
+        assertTrue(actual.getVersionKey().contains(c1.getUuid()));
+        assertThat(actual.getVersionKey(), containsString(String.valueOf(c1.getVersionNumber())));
+        assertThat(actual.getVersionKey(), containsString(String.valueOf(c1.getCommitNumber())));
 
     }
 

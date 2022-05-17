@@ -8,7 +8,6 @@ import se.b3.healthtech.blackbird.blbcomposite.domain.Container;
 import se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject;
 import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import se.b3.healthtech.blackbird.blbcomposite.enums.CompositionType;
-import se.b3.healthtech.blackbird.blbcomposite.enums.ContentType;
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.ContainerDbHandler;
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.ContainerObjectDbHandler;
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.PublicationDbHandler;
