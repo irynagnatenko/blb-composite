@@ -27,6 +27,21 @@ public class PublicationService {
     private final ContainerDbHandler containerDbHandler;
     private final ContainerObjectDbHandler containerObjectDbHandler;
 
+    public String createPublication(CreatePublicationRequest request) {
+
+        log.info("in the composition service class: init");
+
+        List<Publication> publicationList = createPublicationList(request.publication());
+        List<Container> containersList = createContainersList(request.containerList(), request.publication().getId());
+        List<ContainerObject> containerObjectsList = createContainerObjectsList(request.containerObjectList(), request.publication().getId());
+
+        publicationDbHandler.insertPublications(publicationList);
+        containerDbHandler.insertContainers(containersList);
+        containerObjectDbHandler.insertContainerObjects(containerObjectsList);
+
+        return null;
+    }
+
     List<Publication> createPublicationList(Publication publication){
 
         List<Publication> publicationList = new ArrayList<>();
@@ -37,47 +52,32 @@ public class PublicationService {
         return publicationList;
     }
 
-    List<Container> createContainersList(List<Container> containerList){
+    List<Container> createContainersList(List<Container> containerList, String partititonKey){
 
         for (int i = 0; i < containerList.size(); i++) {
-            containerList.get(i).setId(containerList.get(i).getUuid());
+            containerList.get(i).setId(partititonKey);
             containerList.get(i).setVersionKey(
                     CompositionType.CONTAINER + DELIMITER + containerList.get(i).getUuid() + DELIMITER + "V" +containerList.get(i).getVersionNumber() +
                             DELIMITER + "C" + containerList.get(i).getCommitNumber()
             );
         }
 
-        List<Container> listWithoutDuplicates = containerList.stream()
-                .distinct()
-                .collect(Collectors.toList());
-        return listWithoutDuplicates;
+        return containerList;
     }
 
-    List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList){
+    List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey){
         for (int i = 0; i < containerObjectList.size(); i++) {
-            containerObjectList.get(i).setId(containerObjectList.get(i).getUuid());
+            containerObjectList.get(i).setId(partititonKey);
             containerObjectList.get(i).setVersionKey(
                     CompositionType.CONTAINER_OBJECT + DELIMITER + containerObjectList.get(i).getUuid() + DELIMITER + "V" +containerObjectList.get(i).getVersionNumber() +
                             DELIMITER + "C" + containerObjectList.get(i).getCommitNumber()
             );
         }
-        List<ContainerObject> listWithoutDuplicates = containerObjectList.stream()
-                .distinct()
-                .collect(Collectors.toList());
-        return listWithoutDuplicates;
+
+        return containerObjectList;
     }
 
-    public String createPublication(CreatePublicationRequest request) {
 
-        log.info("in the service class");
-
-        List<Publication> publicationList = createPublicationList(request.publication());
-        List<Container> containersList = createContainersList(request.containerList());
-        List<ContainerObject> containerObjectsList = createContainerObjectsList(request.containerObjectList());
-
-        publicationDbHandler.insertPublications(publicationList);
-        containerDbHandler.insertContainers(containersList);
-        containerObjectDbHandler.insertContainerObjects(containerObjectsList);
 
 
         // sätta partitions nyckel --> uuid i publication-object, den är samma för hela compositionen
@@ -91,8 +91,7 @@ public class PublicationService {
         // (3 anrop)
 
         // returnera uuid på partitionen
-        return null; 
-    }
+
 
 }
 

@@ -83,7 +83,7 @@ class PublicationServiceTest {
         List<Container> expectedList = new ArrayList<>();
         expectedList.add(c1);
 
-        List<Container> resultList = publicationService.createContainersList(expectedList);
+        List<Container> resultList = publicationService.createContainersList(expectedList, c1.getUuid());
 
         assertEquals(expectedList.size(),resultList.size());
 
@@ -91,6 +91,7 @@ class PublicationServiceTest {
         assertNotNull(actual.getId());
         assertNotNull(actual.getVersionKey());
         assertEquals(c1.getUuid(), actual.getUuid());
+        assertEquals(c1.getUuid(), actual.getId());
         assertTrue(actual.getVersionKey().contains("CONTAINER"));
         assertTrue(actual.getVersionKey().contains(c1.getUuid()));
         assertThat(actual.getVersionKey(), containsString(String.valueOf(c1.getVersionNumber())));
@@ -114,7 +115,7 @@ class PublicationServiceTest {
         List<ContainerObject> expectedList = new ArrayList<>();
         expectedList.add(c1);
 
-        List<ContainerObject> resultList = publicationService.createContainerObjectsList(expectedList);
+        List<ContainerObject> resultList = publicationService.createContainerObjectsList(expectedList, c1.getUuid());
 
         assertEquals(expectedList.size(),resultList.size());
         assertEquals(expectedList, resultList);
@@ -123,6 +124,7 @@ class PublicationServiceTest {
         assertNotNull(actual.getId());
         assertNotNull(actual.getVersionKey());
         assertEquals(c1.getUuid(), actual.getUuid());
+        assertEquals(c1.getUuid(), actual.getId());
         assertTrue(actual.getVersionKey().contains("CONTAINER_OBJECT"));
 
         assertTrue(resultList.contains(c1));
