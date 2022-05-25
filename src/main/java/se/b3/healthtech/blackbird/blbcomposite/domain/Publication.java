@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @DynamoDbBean
-public class Publication extends BaseObject {
+public class Publication extends BaseObject implements Cloneable{
     @JsonIgnore
     private String id;
     @JsonIgnore
@@ -37,5 +37,10 @@ public class Publication extends BaseObject {
     @DynamoDbSortKey
     public String getVersionKey() {
         return versionKey;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

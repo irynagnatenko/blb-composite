@@ -12,9 +12,9 @@ import se.b3.healthtech.blackbird.blbcomposite.persistence.service.ContainerDbHa
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.ContainerObjectDbHandler;
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.PublicationDbHandler;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,12 +22,13 @@ import java.util.stream.Collectors;
 public class PublicationService {
 
     private static final String DELIMITER = "#";
+    private static final String LATEST = "LATEST";
 
     private final PublicationDbHandler publicationDbHandler;
     private final ContainerDbHandler containerDbHandler;
     private final ContainerObjectDbHandler containerObjectDbHandler;
 
-    public String createPublication(CreatePublicationRequest request) {
+    public String createPublication(CreatePublicationRequest request) throws CloneNotSupportedException {
 
         log.info("in the composition service class: init");
 
@@ -42,39 +43,86 @@ public class PublicationService {
         return null;
     }
 
-    List<Publication> createPublicationList(Publication publication){
+    List<Publication> createPublicationList(Publication publication) throws CloneNotSupportedException {
 
         List<Publication> publicationList = new ArrayList<>();
         publication.setId(publication.getUuid());
         publication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + publication.getUuid() + DELIMITER +"V" + publication.getVersionNumber() + DELIMITER + "C" + publication.getCommitNumber());
         publicationList.add(publication);
 
+        Publication clonePublication = (Publication) publication.clone();
+        clonePublication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + LATEST + DELIMITER + publication.getUuid());
+        publicationList.add(clonePublication);
+
         return publicationList;
     }
 
-    List<Container> createContainersList(List<Container> containerList, String partititonKey){
-
-        for (int i = 0; i < containerList.size(); i++) {
-            containerList.get(i).setId(partititonKey);
-            containerList.get(i).setVersionKey(
-                    CompositionType.CONTAINER + DELIMITER + containerList.get(i).getUuid() + DELIMITER + "V" +containerList.get(i).getVersionNumber() +
-                            DELIMITER + "C" + containerList.get(i).getCommitNumber()
-            );
+    public List<Container> createContainersList(List<Container> containerList, String partitionKey) throws CloneNotSupportedException {
+        List<Container> containersList = new ArrayList<>();
+        log.info("1. " + containerList.size() + " " + containerList.toString());
+        for (Container container : containerList) {
+            container.setId(partitionKey);
+            getVersionKey(container);
         }
+        containersList.addAll(containerList);
+        log.info("2. " + containersList.size() + " " + containersList.toString());
+        List<Container> clonedContainersList = cloneContainersList(containerList);
+        getLatestVersionKey(clonedContainersList);
 
-        return containerList;
+        containersList.addAll(clonedContainersList);
+        log.info("3. " + containersList.size() + " " + containersList.toString());
+        return containersList;
     }
 
-    List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey){
+    private void getVersionKey(Container container) {
+        container.setVersionKey(
+                CompositionType.CONTAINER + DELIMITER + container.getUuid() + DELIMITER +
+                        "V" + container.getVersionNumber() +
+                        DELIMITER + "C" + container.getCommitNumber()
+        );
+    }
+
+    private void getLatestVersionKey(List<Container> containerList) {
+        for (Container container : containerList) {
+            container.setVersionKey(CompositionType.CONTAINER + DELIMITER + LATEST + DELIMITER + container.getUuid());
+        }
+    }
+
+    public List<Container> cloneContainersList(@NotNull List<Container> containerList) throws CloneNotSupportedException {
+        List<Container> clonedContainersList = new ArrayList<>();
+        for (Container container : containerList) {
+            Container clonedContainer = (Container) container.clone();
+            clonedContainersList.add(clonedContainer);
+        }
+        return clonedContainersList;
+    }
+
+    List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey) throws CloneNotSupportedException {
+        List<ContainerObject> containerObjectsList = new ArrayList<>();
+        log.info("1. " + containerObjectList.size() + " " + containerObjectList.toString());
+
         for (int i = 0; i < containerObjectList.size(); i++) {
             containerObjectList.get(i).setId(partititonKey);
             containerObjectList.get(i).setVersionKey(
-                    CompositionType.CONTAINER_OBJECT + DELIMITER + containerObjectList.get(i).getUuid() + DELIMITER + "V" +containerObjectList.get(i).getVersionNumber() +
+                    CompositionType.CONTAINER_OBJECT + DELIMITER + containerObjectList.get(i).getUuid() + DELIMITER + "V" + containerObjectList.get(i).getVersionNumber() +
                             DELIMITER + "C" + containerObjectList.get(i).getCommitNumber()
             );
-        }
+            log.info("2. " + containerObjectList.size() + " " + containerObjectsList.toString());
 
-        return containerObjectList;
+        }
+        containerObjectsList.addAll(containerObjectList);
+        log.info("3. " + containerObjectsList.size() + " " + containerObjectsList.toString());
+
+        for (ContainerObject containerObject : containerObjectList) {
+                ContainerObject cloneContainerObject = (ContainerObject) containerObject.clone();
+                cloneContainerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER + LATEST + containerObject.getUuid());
+                containerObjectsList.add(cloneContainerObject);
+            }
+            log.info("4. " + containerObjectsList.size() + " " + containerObjectsList.toString());
+
+
+
+        return containerObjectsList;
     }
 
 

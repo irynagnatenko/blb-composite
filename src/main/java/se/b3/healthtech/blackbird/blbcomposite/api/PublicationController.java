@@ -26,7 +26,7 @@ public class PublicationController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
     @PostMapping(value= "/")
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPublication(@RequestBody CreatePublicationRequest request){
+    public void createPublication(@RequestBody CreatePublicationRequest request) throws CloneNotSupportedException {
         log.info("in controller class");
         publicationService.createPublication(request);
     }

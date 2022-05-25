@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @DynamoDbBean
-public class ContainerObject extends BaseObject{
+public class ContainerObject extends BaseObject implements Cloneable{
     @JsonIgnore
     private String id;
     @JsonIgnore
@@ -25,5 +25,11 @@ public class ContainerObject extends BaseObject{
     @DynamoDbPartitionKey
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ContainerObject cloned = (ContainerObject) super.clone();
+        return cloned;
     }
 }
