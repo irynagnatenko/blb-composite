@@ -81,13 +81,13 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.6</version>
+            <version>1.6.4</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
+          <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
@@ -104,6 +104,7 @@
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
                     <excludes>
                         <exclude>
@@ -114,24 +115,24 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                <version>0.2</version>
-                <executions>
-                    <execution>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <apiDocsUrl>http://localhost:8086/api-docs</apiDocsUrl>
-                    <outputFileName>openapi.json</outputFileName>
-                    <!--<outputDir>${project.build.directory}</outputDir> -->
-                    <outputDir>${project.basedir}/src/main/webapp/WEB-INF/api</outputDir>
-                </configuration>
-            </plugin>
+                          <groupId>org.springdoc</groupId>
+                          <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                          <version>0.2</version>
+                          <executions>
+                              <execution>
+                                  <phase>integration-test</phase>
+                                  <goals>
+                                      <goal>generate</goal>
+                                  </goals>
+                              </execution>
+                          </executions>
+                          <configuration>
+                              <apiDocsUrl>http://localhost:8086/api-docs</apiDocsUrl>
+                              <outputFileName>openapi.json</outputFileName>
+                            <outputDir>${project.basedir}/src/main/webapp/WEB-INF/api</outputDir>
+                          </configuration>
+                      </plugin>
+
         </plugins>
     </build>
 

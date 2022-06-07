@@ -59,18 +59,18 @@ public class PublicationService {
 
     public List<Container> createContainersList(List<Container> containerList, String partitionKey) throws CloneNotSupportedException {
         List<Container> containersList = new ArrayList<>();
-        log.info("1. " + containerList.size() + " " + containerList.toString());
+        log.info("1. " + containerList.size() + " " + containerList);
         for (Container container : containerList) {
             container.setId(partitionKey);
             getVersionKey(container);
         }
         containersList.addAll(containerList);
-        log.info("2. " + containersList.size() + " " + containersList.toString());
+        log.info("2. " + containersList.size() + " " + containersList);
         List<Container> clonedContainersList = cloneContainersList(containerList);
         getLatestVersionKey(clonedContainersList);
 
         containersList.addAll(clonedContainersList);
-        log.info("3. " + containersList.size() + " " + containersList.toString());
+        log.info("3. " + containersList.size() + " " + containersList);
         return containersList;
     }
 
@@ -99,7 +99,7 @@ public class PublicationService {
 
     List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey) throws CloneNotSupportedException {
         List<ContainerObject> containerObjectsList = new ArrayList<>();
-        log.info("1. " + containerObjectList.size() + " " + containerObjectList.toString());
+        log.info("1. " + containerObjectList.size() + " " + containerObjectList);
 
         for (int i = 0; i < containerObjectList.size(); i++) {
             containerObjectList.get(i).setId(partititonKey);
@@ -107,20 +107,18 @@ public class PublicationService {
                     CompositionType.CONTAINER_OBJECT + DELIMITER + containerObjectList.get(i).getUuid() + DELIMITER + "V" + containerObjectList.get(i).getVersionNumber() +
                             DELIMITER + "C" + containerObjectList.get(i).getCommitNumber()
             );
-            log.info("2. " + containerObjectList.size() + " " + containerObjectsList.toString());
+            log.info("2. " + containerObjectList.size() + " " + containerObjectsList);
 
         }
         containerObjectsList.addAll(containerObjectList);
-        log.info("3. " + containerObjectsList.size() + " " + containerObjectsList.toString());
+        log.info("3. " + containerObjectsList.size() + " " + containerObjectsList);
 
         for (ContainerObject containerObject : containerObjectList) {
                 ContainerObject cloneContainerObject = (ContainerObject) containerObject.clone();
                 cloneContainerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER + LATEST + containerObject.getUuid());
                 containerObjectsList.add(cloneContainerObject);
             }
-            log.info("4. " + containerObjectsList.size() + " " + containerObjectsList.toString());
-
-
+            log.info("4. " + containerObjectsList.size() + " " + containerObjectsList);
 
         return containerObjectsList;
     }
