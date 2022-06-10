@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import se.b3.healthtech.blackbird.blbcomposite.api.request.CreatePublicationRequest;
+import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import se.b3.healthtech.blackbird.blbcomposite.service.PublicationService;
 
 @Slf4j
@@ -27,7 +28,21 @@ public class PublicationController {
     @PostMapping(value= "/")
     @ResponseStatus(value = HttpStatus.OK)
     public void createPublication(@RequestBody CreatePublicationRequest request) throws CloneNotSupportedException {
-        log.info("in controller class");
+        log.info("in CompositionController - createPublication");
         publicationService.createPublication(request);
+    }
+
+    @Operation(summary = "Get latest publication for a specific partition key")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found publication", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @GetMapping(value= "/latest/",
+                params = "key",
+                produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public Publication getLatestPublication(@RequestParam("key") String key){
+        log.info("in PublicationController - getLatestPublication");
+        return publicationService.getLatestPublication(key);
     }
 }
