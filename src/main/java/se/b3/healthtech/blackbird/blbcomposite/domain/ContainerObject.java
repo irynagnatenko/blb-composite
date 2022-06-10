@@ -5,6 +5,7 @@ import lombok.Data;
 import se.b3.healthtech.blackbird.blbcomposite.enums.ContentType;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import javax.validation.constraints.NotNull;
 
@@ -25,6 +26,14 @@ public class ContainerObject extends BaseObject implements Cloneable{
     @DynamoDbPartitionKey
     public String getId() {
         return id;
+    }
+
+    @DynamoDbSortKey
+    public String getVersionKey() {
+        return versionKey;
+    }
+    public void setVersionKey(String versionKey) {
+        this.versionKey = versionKey;
     }
 
     @Override

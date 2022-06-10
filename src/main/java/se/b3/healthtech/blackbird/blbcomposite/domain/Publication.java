@@ -39,6 +39,14 @@ public class Publication extends BaseObject implements Cloneable{
         return versionKey;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setVersionKey(String versionKey) {
+        this.versionKey = versionKey;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
