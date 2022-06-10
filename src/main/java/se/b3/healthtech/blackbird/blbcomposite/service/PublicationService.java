@@ -60,6 +60,7 @@ public class PublicationService {
     public List<Container> createContainersList(List<Container> containerList, String partitionKey) throws CloneNotSupportedException {
         List<Container> containersList = new ArrayList<>();
         log.info("1. " + containerList.size() + " " + containerList);
+
         for (Container container : containerList) {
             container.setId(partitionKey);
             getVersionKey(container);
@@ -115,7 +116,7 @@ public class PublicationService {
 
         for (ContainerObject containerObject : containerObjectList) {
                 ContainerObject cloneContainerObject = (ContainerObject) containerObject.clone();
-                cloneContainerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER + LATEST + containerObject.getUuid());
+                cloneContainerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER + LATEST + DELIMITER + containerObject.getUuid());
                 containerObjectsList.add(cloneContainerObject);
             }
             log.info("4. " + containerObjectsList.size() + " " + containerObjectsList);
@@ -123,20 +124,13 @@ public class PublicationService {
         return containerObjectsList;
     }
 
+    public Publication getLatestPublication(String key) {
 
-
-
-        // sätta partitions nyckel --> uuid i publication-object, den är samma för hela compositionen
-
-        // sätta versionsnyckel
-        // COMPOSITION#<guid>#V<versionsnummer>#C<CommitNr>
-        // CONTAINER#<guid>#V<versionsnummer>#C<CommitNr>
-        // CONTAINEROBJECT#<guid>#V<versionsnummer>#C<CommitNr>
-
-        // skriv data till databasen
-        // (3 anrop)
-
-        // returnera uuid på partitionen
+        String versionKey = CompositionType.COMPOSITION.name() + DELIMITER + LATEST;
+        List<Publication> publicationList = publicationDbHandler.getPublications(key, versionKey);
+        log.info("Composite - getLatestPublication");
+        return publicationList.get(0);
+    }
 
 
 }
