@@ -2,12 +2,12 @@ package se.b3.healthtech.blackbird.blbcomposite.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import se.b3.healthtech.blackbird.blbcomposite.enums.PublicationType;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 @DynamoDbBean
@@ -23,11 +23,11 @@ public class Publication extends BaseObject implements Cloneable{
     @NotNull
     private String title;
     @NotNull
-    private String createdBy;
-    @NotNull
     private long created;
     @NotNull
-    private List<String> containersIdList;
+    private String createdBy;
+    @NotNull
+    private PublicationType publicationType;
 
     @DynamoDbPartitionKey
     public String getId() {
