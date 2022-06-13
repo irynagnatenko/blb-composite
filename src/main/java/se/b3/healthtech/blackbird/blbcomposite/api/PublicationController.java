@@ -20,6 +20,8 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+
+    //TODO: controller tar in en publication och inte en request objekt
     @Operation(summary = "Create a new publication")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created publication", content = {@Content}),
@@ -27,9 +29,9 @@ public class PublicationController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
     @PostMapping(value= "/")
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPublication(@RequestBody CreatePublicationRequest request) throws CloneNotSupportedException {
+    public void createPublication(@RequestBody Publication publication) throws CloneNotSupportedException {
         log.info("in CompositionController - createPublication");
-        publicationService.createPublication(request);
+        publicationService.createPublication(publication);
     }
 
     @Operation(summary = "Get latest publication for a specific partition key")

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import se.b3.healthtech.blackbird.blbcomposite.domain.Container;
+import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import se.b3.healthtech.blackbird.blbcomposite.service.ContainerService;
 
 import java.util.List;
@@ -23,6 +24,21 @@ public class ContainerController {
     public ContainerController(ContainerService containerService) {
         this.containerService = containerService;
     }
+
+
+    @Operation(summary = "Create a new container list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully created a container list", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @PostMapping(value= "/",
+            params = {"key"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public void createPublication(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
+        log.info("in CompositionController - createContainers");
+        containerService.createContainers(containers, partitionKey);
+    }
+
 
     @Operation(summary = "Get the list of latest containers for a specific partitionKey")
     @ApiResponses(value = {
@@ -39,4 +55,6 @@ public class ContainerController {
         log.info("in ContainerController - getLatestController");
         return containerService.getLatestContainers(key);
     }
+
+    //TODO: createContainer controller
 }

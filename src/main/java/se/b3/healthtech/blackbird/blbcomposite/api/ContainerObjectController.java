@@ -24,6 +24,19 @@ public class ContainerObjectController {
         this.containerObjectService = containerObjectService;
     }
 
+    @Operation(summary = "Create a new containerObject list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully created a containerObject list", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @PostMapping(value= "/",
+            params = {"key"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public void createPublication(@RequestParam("key") String partitionKey, @RequestBody List<ContainerObject> containerObjects) throws CloneNotSupportedException {
+        log.info("in CompositionController - createContainerObjects");
+        containerObjectService.createContainerObjects(containerObjects, partitionKey);
+    }
+
     @Operation(summary = "Get the list of latest containerObjects for a specific partitionKey")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Container Object",
@@ -39,4 +52,7 @@ public class ContainerObjectController {
         log.info("in ContainerObjectsController - getLatestControllerObjects");
         return containerObjectService.getLatestContainerObjects(key);
     }
+
+    //TODO: createContainerObject controller
+
 }
