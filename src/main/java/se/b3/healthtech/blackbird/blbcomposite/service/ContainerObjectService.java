@@ -33,7 +33,7 @@ public class ContainerObjectService {
         return null;
     }
 
-    private List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey) throws CloneNotSupportedException {
+    public List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey) throws CloneNotSupportedException {
         List<ContainerObject> containerObjectsList = new ArrayList<>();
         log.info("1. " + containerObjectList.size() + " " + containerObjectList);
 

@@ -33,7 +33,7 @@ public class ContainerService {
 
         return null;
     }
-    private List<Container> createContainersList(List<Container> containerList, String partitionKey) throws CloneNotSupportedException {
+    public List<Container> createContainersList(List<Container> containerList, String partitionKey) throws CloneNotSupportedException {
         List<Container> containersList = new ArrayList<>();
         log.info("1. " + containerList.size() + " " + containerList);
 
