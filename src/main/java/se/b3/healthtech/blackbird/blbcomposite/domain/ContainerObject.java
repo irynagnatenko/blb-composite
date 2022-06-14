@@ -2,7 +2,7 @@ package se.b3.healthtech.blackbird.blbcomposite.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import se.b3.healthtech.blackbird.blbcomposite.enums.ContentType;
+import se.b3.healthtech.blackbird.blbcomposite.enums.ObjectType;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
@@ -19,9 +19,7 @@ public class ContainerObject extends BaseObject implements Cloneable{
     @NotNull
     private String uuid;
     @NotNull
-    private int ordinal;
-    @NotNull
-    private ContentType contentType;
+    private ObjectType objectType;
 
     @DynamoDbPartitionKey
     public String getId() {

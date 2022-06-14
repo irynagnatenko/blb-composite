@@ -32,7 +32,7 @@ public class ContainerObjectController {
     @PostMapping(value= "/",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPublication(@RequestParam("key") String partitionKey, @RequestBody List<ContainerObject> containerObjects) throws CloneNotSupportedException {
+    public void createContainerObjects(@RequestParam("key") String partitionKey, @RequestBody List<ContainerObject> containerObjects) throws CloneNotSupportedException {
         log.info("in CompositionController - createContainerObjects");
         containerObjectService.createContainerObjects(containerObjects, partitionKey);
     }

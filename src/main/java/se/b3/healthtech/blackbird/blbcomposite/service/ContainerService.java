@@ -39,6 +39,8 @@ public class ContainerService {
 
         for (Container container : containerList) {
             container.setId(partitionKey);
+            container.setCommitNumber(1);
+            container.setVersionNumber(1);
             getVersionKey(container);
         }
         containersList.addAll(containerList);

@@ -37,6 +37,8 @@ public class PublicationService {
 
         List<Publication> publicationList = new ArrayList<>();
         publication.setId(publication.getUuid());
+        publication.setVersionNumber(1);
+        publication.setCommitNumber(1);
         publication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + publication.getUuid() + DELIMITER +"V" + publication.getVersionNumber() + DELIMITER + "C" + publication.getCommitNumber());
         publicationList.add(publication);
 

@@ -30,13 +30,11 @@ public class ContainerObjectServiceTest {
         c1.setUuid("uuid1");
         c1.setCreatedBy("iryna");
         c1.setCreated(1000L);
-        c1.setOrdinal(1);
 
         ContainerObject c2 = new ContainerObject();
         c2.setUuid("uuid2");
         c2.setCreatedBy("iryna");
         c2.setCreated(1000L);
-        c2.setOrdinal(1);
 
         List<ContainerObject> expectedList = new ArrayList<>();
         expectedList.add(c1);

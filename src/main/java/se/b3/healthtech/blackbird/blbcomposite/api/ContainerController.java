@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import se.b3.healthtech.blackbird.blbcomposite.domain.Container;
-import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import se.b3.healthtech.blackbird.blbcomposite.service.ContainerService;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class ContainerController {
     @PostMapping(value= "/",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPublication(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
+    public void createContainers(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
         log.info("in CompositionController - createContainers");
         containerService.createContainers(containers, partitionKey);
     }

@@ -39,6 +39,8 @@ public class ContainerObjectService {
 
         for (int i = 0; i < containerObjectList.size(); i++) {
             containerObjectList.get(i).setId(partititonKey);
+            containerObjectList.get(i).setCommitNumber(1);
+            containerObjectList.get(i).setVersionNumber(1);
             containerObjectList.get(i).setVersionKey(
                     CompositionType.CONTAINER_OBJECT + DELIMITER + containerObjectList.get(i).getUuid() + DELIMITER + "V" + containerObjectList.get(i).getVersionNumber() +
                             DELIMITER + "C" + containerObjectList.get(i).getCommitNumber()
