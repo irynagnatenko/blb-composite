@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @DynamoDbBean
-public class BaseObject {
+public class BaseObject implements Cloneable {
     @NotNull
     private int versionNumber;
     @NotNull
@@ -16,5 +16,12 @@ public class BaseObject {
     private String createdBy;
     @NotNull
     private long created;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        BaseObject cloned = (BaseObject) super.clone();
+        return cloned;
+    }
+
 
 }

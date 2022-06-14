@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteItemEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -34,4 +37,18 @@ public class PublicationDbHandler {
         System.out.println("done");
     }
 
+    public List<Publication> getPublications(String partitionKey, String versionKey) {
+        List<Publication> publicationsList = new ArrayList<>();
+
+        QueryConditional queryConditional = QueryConditional.sortBeginsWith(Key.builder()
+                .partitionValue(partitionKey)
+                .sortValue(versionKey)
+                .build());
+
+        for (Publication publication : publicationTable.query(queryConditional).items()) {
+            publicationsList.add(publication);
+            log.info("PublicationId: {}", publication.getUuid());
+        }
+        return publicationsList;
+    }
 }

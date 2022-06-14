@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.6</version>
+            <version>1.6.4</version>
         </dependency>
     </dependencies>
 
@@ -104,6 +104,7 @@
                         </goals>
                     </execution>
                 </executions>
+
                 <configuration>
                     <excludes>
                         <exclude>
@@ -128,10 +129,10 @@
                 <configuration>
                     <apiDocsUrl>http://localhost:8086/api-docs</apiDocsUrl>
                     <outputFileName>openapi.json</outputFileName>
-                    <!--<outputDir>${project.build.directory}</outputDir> -->
                     <outputDir>${project.basedir}/src/main/webapp/WEB-INF/api</outputDir>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
