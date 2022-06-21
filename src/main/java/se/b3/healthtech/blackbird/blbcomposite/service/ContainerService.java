@@ -37,14 +37,12 @@ public class ContainerService {
         List<Container> containersList = new ArrayList<>();
         log.info("1. " + containerList.size() + " " + containerList);
 
-        for (Container container : containerList) {
-            container.setId(partitionKey);
-            container.setCommitNumber(1);
-            container.setVersionNumber(1);
-            getVersionKey(container);
+        for (Container container : containerList) {addPartitionKey(container, partitionKey);
+            addVersionKey(container);
         }
         containersList.addAll(containerList);
         log.info("2. " + containersList.size() + " " + containersList);
+
         List<Container> clonedContainersList = cloneContainersList(containerList);
         getLatestVersionKey(clonedContainersList);
 
@@ -53,7 +51,8 @@ public class ContainerService {
         return containersList;
     }
 
-    private void getVersionKey(Container container) {
+
+    private void addVersionKey(Container container) {
         container.setVersionKey(
                 CompositionType.CONTAINER + DELIMITER + container.getUuid() + DELIMITER +
                         "V" + container.getVersionNumber() +
@@ -61,10 +60,21 @@ public class ContainerService {
         );
     }
 
+    // for get-method
     private void getLatestVersionKey(List<Container> containerList) {
         for (Container container : containerList) {
             container.setVersionKey(CompositionType.CONTAINER + DELIMITER + LATEST_KEY + DELIMITER + container.getUuid());
         }
+    }
+
+    // for add-method
+    private void addPartitionKey(Container container, String partitionKey) {
+        container.setId(partitionKey);
+        container.setCommitNumber(1);
+        container.setVersionNumber(1);
+    }
+    private void addLatestVersionKey(Container container) {
+            container.setVersionKey(CompositionType.CONTAINER + DELIMITER + LATEST_KEY + DELIMITER + container.getUuid());
     }
 
     public List<Container> cloneContainersList(@NotNull List<Container> containerList) throws CloneNotSupportedException {
@@ -76,9 +86,43 @@ public class ContainerService {
         return clonedContainersList;
     }
 
+    // for add-method
+    public Container cloneContainer(@NotNull Container container) throws CloneNotSupportedException {
+            Container clonedContainer = (Container) container.clone();
+        return clonedContainer;
+    }
+
     // man får in partitionKey, skapar versionKey och anropar databasen
     public List<Container> getLatestContainers(String key) {
         String versionKey = CompositionType.CONTAINER.name() + DELIMITER + LATEST_KEY;
         return containerDbHandler.getContainers(key, versionKey);
+    }
+
+    public String addContainer(String key, Container container) throws CloneNotSupportedException {
+        log.info("in the ContainerService class: addContainer init");
+
+        List<Container> containersList = new ArrayList<>();
+        log.info("1. " + containersList.size() + " " + containersList);
+
+        // sätt partitionKey och versionKey för den nya containern
+        addPartitionKey(container, key);
+        addVersionKey(container);
+
+        containersList.add(container);
+        log.info("2. " + containersList.size() + " " + containersList);
+
+        //clona containerobjekt
+        Container clonedContainer = cloneContainer(container);
+
+        // sätt versionKey för Latest-nyckeln
+        addLatestVersionKey(clonedContainer);
+
+        containersList.add(clonedContainer);
+        log.info("3. " + containersList.size() + " " + containersList);
+
+        // anropa databasen så att båda objekten skapas i databasen. använd befintlig metod
+        containerDbHandler.insertContainers(containersList);
+
+        return null;
     }
 }

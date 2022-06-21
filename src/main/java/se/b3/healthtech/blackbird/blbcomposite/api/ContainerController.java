@@ -30,7 +30,7 @@ public class ContainerController {
             @ApiResponse(responseCode = "200", description = "Successfully created a container list", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/",
+    @PostMapping(value= "/add/all/",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
     public void createContainers(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
@@ -55,5 +55,18 @@ public class ContainerController {
         return containerService.getLatestContainers(key);
     }
 
-    //TODO: createContainer controller
+    @Operation(summary = "Add a new container")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully added a container", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @PostMapping(value= "/add/",
+            params = "key",
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public void addContainer(@RequestBody Container request, @RequestParam String key) throws CloneNotSupportedException {
+        log.info("in ContainerController - createContainer");
+        containerService.addContainer(key, request);
+    }
+
 }
