@@ -37,7 +37,8 @@ public class ContainerService {
         List<Container> containersList = new ArrayList<>();
         log.info("1. " + containerList.size() + " " + containerList);
 
-        for (Container container : containerList) {addPartitionKey(container, partitionKey);
+        for (Container container : containerList) {
+            addPartitionKey(container, partitionKey);
             addVersionKey(container);
         }
         containersList.addAll(containerList);
@@ -125,4 +126,28 @@ public class ContainerService {
 
         return null;
     }
+
+    public void updateContainer(String key, Container container) {
+
+        //Implementation av metoden addContainer i ContainerService-klassen.
+        //ParameterLista till addContainer-metoden (String key, Container container)
+        //Skapa upp en array av Container
+        //Utöka container-objektet med
+        //partitionskey
+        //versionkey
+        //CommitNr
+        //VersionNr
+        //Clona containerObjektet och sätt versionKey till en LatestKey
+        //Lägg in båda containerObjekten och arrayListan
+        //Anropa dbHandler för att skriva ner de båda objekten till databasen
+        //
+    }
+
+    // for addContent method
+    public Container getLatestContainer(String key, String containerId) {
+        String versionKey = CompositionType.CONTAINER.name() + DELIMITER + LATEST_KEY + DELIMITER + containerId;
+        List<Container> containerList = containerDbHandler.getContainers(key, versionKey);
+        return containerList.get(0);
+    }
+
 }

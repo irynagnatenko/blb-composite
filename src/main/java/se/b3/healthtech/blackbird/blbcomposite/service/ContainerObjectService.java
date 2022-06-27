@@ -2,7 +2,6 @@ package se.b3.healthtech.blackbird.blbcomposite.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import se.b3.healthtech.blackbird.blbcomposite.domain.Container;
 import se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject;
 import se.b3.healthtech.blackbird.blbcomposite.enums.CompositionType;
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.ContainerObjectDbHandler;
@@ -37,14 +36,10 @@ public class ContainerObjectService {
         List<ContainerObject> containerObjectsList = new ArrayList<>();
         log.info("1. " + containerObjectList.size() + " " + containerObjectList);
 
-        for (int i = 0; i < containerObjectList.size(); i++) {
-            containerObjectList.get(i).setId(partititonKey);
-            containerObjectList.get(i).setCommitNumber(1);
-            containerObjectList.get(i).setVersionNumber(1);
-            containerObjectList.get(i).setVersionKey(
-                    CompositionType.CONTAINER_OBJECT + DELIMITER + containerObjectList.get(i).getUuid() + DELIMITER + "V" + containerObjectList.get(i).getVersionNumber() +
-                            DELIMITER + "C" + containerObjectList.get(i).getCommitNumber()
-            );
+        for (ContainerObject containerObject : containerObjectList) {
+            setPartitionKey(containerObject, partititonKey);
+            setVersionKey(containerObject);
+
             log.info("2. " + containerObjectList.size() + " " + containerObjectsList);
 
         }
@@ -52,21 +47,74 @@ public class ContainerObjectService {
         log.info("3. " + containerObjectsList.size() + " " + containerObjectsList);
 
         for (ContainerObject containerObject : containerObjectList) {
-            ContainerObject cloneContainerObject = (ContainerObject) containerObject.clone();
-            cloneContainerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER + LATEST_KEY + DELIMITER + containerObject.getUuid());
-            containerObjectsList.add(cloneContainerObject);
+            ContainerObject clonedContainerObject = cloneContainerObject(containerObject);
+            setLatestVersionKey(clonedContainerObject);
+            containerObjectsList.add(clonedContainerObject);
         }
         log.info("4. " + containerObjectsList.size() + " " + containerObjectsList);
 
         return containerObjectsList;
     }
 
-        public List<ContainerObject> getLatestContainerObjects(String key) {
+    private void setLatestVersionKey(ContainerObject containerObject) {
+        containerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER +
+                LATEST_KEY + DELIMITER + containerObject.getUuid());
+    }
+
+    private ContainerObject cloneContainerObject(ContainerObject containerObject) throws CloneNotSupportedException {
+        ContainerObject clonedContainerObject = (ContainerObject) containerObject.clone();
+        return clonedContainerObject;
+    }
+
+    /*
+    private void setVersionKeyList(List<ContainerObject> containerObjectList) {
+        for (ContainerObject containerObject : containerObjectList) {
+            containerObject.setVersionKey(
+                    CompositionType.CONTAINER_OBJECT + DELIMITER + containerObject.getUuid() +
+                            DELIMITER + "V" + containerObject.getVersionNumber() +
+                            DELIMITER + "C" + containerObject.getCommitNumber()
+            );
+        }
+    }
+     */
+
+    private void setVersionKey(ContainerObject containerObject) {
+        containerObject.setVersionKey(
+                CompositionType.CONTAINER_OBJECT + DELIMITER + containerObject.getUuid() +
+                        DELIMITER + "V" + containerObject.getVersionNumber() +
+                        DELIMITER + "C" + containerObject.getCommitNumber()
+        );
+    }
+
+    public List<ContainerObject> getLatestContainerObjects(String key) {
         String versionKey = CompositionType.CONTAINER_OBJECT.name() + DELIMITER + LATEST_KEY;
         return containerObjectDbHandler.getContainerObjects(key, versionKey);
     }
 
+    private void setPartitionKey(ContainerObject containerObject, String partitionKey) {
+        containerObject.setId(partitionKey);
+        containerObject.setCommitNumber(1);
+        containerObject.setVersionNumber(1);
+    }
 
+    public void addContainerObject(String key, ContainerObject containerObject) throws CloneNotSupportedException {
+
+        List<ContainerObject> resultListContainerObject = new ArrayList<>();
+
+        setVersionKey(containerObject);
+        setPartitionKey(containerObject,key);
+
+        resultListContainerObject.add(containerObject);
+
+        ContainerObject clonedContainerObject = cloneContainerObject(containerObject);
+
+        setLatestVersionKey(clonedContainerObject);
+
+        resultListContainerObject.add(clonedContainerObject);
+
+        containerObjectDbHandler.insertContainerObjects(resultListContainerObject);
+
+    }
 }
 
 
