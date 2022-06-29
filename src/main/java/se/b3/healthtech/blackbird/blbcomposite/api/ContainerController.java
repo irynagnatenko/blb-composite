@@ -30,7 +30,7 @@ public class ContainerController {
             @ApiResponse(responseCode = "200", description = "Successfully created a container list", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/add/all/",
+    @PostMapping(value= "/all/",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
     public void createContainers(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
@@ -45,7 +45,7 @@ public class ContainerController {
                             schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.Container.class))}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
-    @GetMapping(value = "/latest/all/",
+    @GetMapping(value = "/all/",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
@@ -59,7 +59,7 @@ public class ContainerController {
             @ApiResponse(responseCode = "200", description = "Successfully added a container", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/add/",
+    @PostMapping(value= "/",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
@@ -78,11 +78,11 @@ public class ContainerController {
                             schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.Container.class))}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
-    @GetMapping(value = "/latest/",
-            params = "key, containerId",
+    @GetMapping(value = "/",
+            params = {"key", "containerId"},
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
-    public Container getLatestContainer(@RequestParam("key") String key, @RequestParam("containerId")String containerId) {
+    public Container getLatestContainer(@RequestParam("key") String key, @RequestParam("containerId") String containerId) {
         log.info("in ContainerController - getLatestContainer");
         return containerService.getLatestContainer(key, containerId);
     }

@@ -127,22 +127,6 @@ public class ContainerService {
         return null;
     }
 
-    public void updateContainer(String key, Container container) {
-
-        //Implementation av metoden addContainer i ContainerService-klassen.
-        //ParameterLista till addContainer-metoden (String key, Container container)
-        //Skapa upp en array av Container
-        //Utöka container-objektet med
-        //partitionskey
-        //versionkey
-        //CommitNr
-        //VersionNr
-        //Clona containerObjektet och sätt versionKey till en LatestKey
-        //Lägg in båda containerObjekten och arrayListan
-        //Anropa dbHandler för att skriva ner de båda objekten till databasen
-        //
-    }
-
     // for addContent method
     public Container getLatestContainer(String key, String containerId) {
         String versionKey = CompositionType.CONTAINER.name() + DELIMITER + LATEST_KEY + DELIMITER + containerId;
