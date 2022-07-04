@@ -30,7 +30,7 @@ public class ContainerController {
             @ApiResponse(responseCode = "200", description = "Successfully created a container list", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/add/all/",
+    @PostMapping(value= "/all/",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
     public void createContainers(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
@@ -38,20 +38,19 @@ public class ContainerController {
         containerService.createContainers(containers, partitionKey);
     }
 
-
     @Operation(summary = "Get the list of latest containers for a specific partitionKey")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Container",
+            @ApiResponse(responseCode = "200", description = "Found containers list",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.Container.class))}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
-    @GetMapping(value = "/latest/all/",
+    @GetMapping(value = "/all/",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public List<Container> getLatestContainers(@RequestParam("key") String key) {
-        log.info("in ContainerController - getLatestController");
+        log.info("in ContainerController - getLatestContainers");
         return containerService.getLatestContainers(key);
     }
 
@@ -60,13 +59,32 @@ public class ContainerController {
             @ApiResponse(responseCode = "200", description = "Successfully added a container", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/add/",
+    @PostMapping(value= "/",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public void addContainer(@RequestBody Container request, @RequestParam String key) throws CloneNotSupportedException {
         log.info("in ContainerController - createContainer");
         containerService.addContainer(key, request);
+    }
+
+    // anropa addContainer istället av /update endpoint
+
+    // For addContent
+    @Operation(summary = "Get the latest container for a specific partitionKey")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found container",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.Container.class))}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @GetMapping(value = "/",
+            params = {"key", "containerId"},
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public Container getLatestContainer(@RequestParam("key") String key, @RequestParam("containerId") String containerId) {
+        log.info("in ContainerController - getLatestContainer");
+        return containerService.getLatestContainer(key, containerId);
     }
 
 }

@@ -37,7 +37,8 @@ public class ContainerService {
         List<Container> containersList = new ArrayList<>();
         log.info("1. " + containerList.size() + " " + containerList);
 
-        for (Container container : containerList) {addPartitionKey(container, partitionKey);
+        for (Container container : containerList) {
+            addPartitionKey(container, partitionKey);
             addVersionKey(container);
         }
         containersList.addAll(containerList);
@@ -125,4 +126,12 @@ public class ContainerService {
 
         return null;
     }
+
+    // for addContent method
+    public Container getLatestContainer(String key, String containerId) {
+        String versionKey = CompositionType.CONTAINER.name() + DELIMITER + LATEST_KEY + DELIMITER + containerId;
+        List<Container> containerList = containerDbHandler.getContainers(key, versionKey);
+        return containerList.get(0);
+    }
+
 }

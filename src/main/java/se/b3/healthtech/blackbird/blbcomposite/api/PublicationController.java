@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import se.b3.healthtech.blackbird.blbcomposite.api.request.CreatePublicationRequest;
 import se.b3.healthtech.blackbird.blbcomposite.domain.Publication;
 import se.b3.healthtech.blackbird.blbcomposite.service.PublicationService;
 
@@ -39,7 +38,7 @@ public class PublicationController {
             @ApiResponse(responseCode = "200", description = "Successfully found publication", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @GetMapping(value= "/latest/",
+    @GetMapping(value= "/",
                 params = "key",
                 produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)

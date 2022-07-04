@@ -18,22 +18,22 @@ import java.util.List;
 @RestController
 public class ContainerObjectController {
 
-    private ContainerObjectService containerObjectService;
+    private final ContainerObjectService containerObjectService;
 
     public ContainerObjectController(ContainerObjectService containerObjectService) {
         this.containerObjectService = containerObjectService;
     }
 
-    @Operation(summary = "Create a new containerObject list")
+    @Operation(summary = "Create a list of containerObjects")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully created a containerObject list", content = {@Content}),
+            @ApiResponse(responseCode = "200", description = "Successfully created a list of containerObjects", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/",
+    @PostMapping(value= "/all",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
     public void createContainerObjects(@RequestParam("key") String partitionKey, @RequestBody List<ContainerObject> containerObjects) throws CloneNotSupportedException {
-        log.info("in CompositionController - createContainerObjects");
+        log.info("in ContainerObjectController - createContainerObjects");
         containerObjectService.createContainerObjects(containerObjects, partitionKey);
     }
 
@@ -44,7 +44,7 @@ public class ContainerObjectController {
                             schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject.class))}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
-    @GetMapping(value = "/latest/all/",
+    @GetMapping(value = "/all/",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
@@ -53,6 +53,19 @@ public class ContainerObjectController {
         return containerObjectService.getLatestContainerObjects(key);
     }
 
-    //TODO: createContainerObject controller
+    @Operation(summary = "Create a new containerObject ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully created a containerObject", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @PostMapping(value= "/",
+            params = {"key"},
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public void addContainerObject(@RequestParam("key") String publicationId, @RequestBody ContainerObject containerObject) throws CloneNotSupportedException {
+        log.info("in ContainerObjectController - addContainerObject");
+        containerObjectService.addContainerObject(publicationId, containerObject);
+    }
+
 
 }
