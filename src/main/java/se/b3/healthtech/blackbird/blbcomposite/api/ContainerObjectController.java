@@ -39,7 +39,7 @@ public class ContainerObjectController {
 
     @Operation(summary = "Get the list of latest containerObjects for a specific partitionKey")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Container Object",
+            @ApiResponse(responseCode = "200", description = "Found Container Object List",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject.class))}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
@@ -49,7 +49,7 @@ public class ContainerObjectController {
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public List<ContainerObject> getLatestContainerObjects(@RequestParam("key") String key) {
-        log.info("in ContainerObjectsController - getLatestControllerObjects");
+        log.info("in ContainerObjectsController - getLatestControllerObjects List");
         return containerObjectService.getLatestContainerObjects(key);
     }
 
@@ -67,5 +67,37 @@ public class ContainerObjectController {
         containerObjectService.addContainerObject(publicationId, containerObject);
     }
 
+    @Operation(summary = "Get the latest containerObject for a specific partitionKey")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Container Object",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject.class))}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @GetMapping(value = "/",
+            params = {"key","id"},
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public ContainerObject getLatestContainerObject(@RequestParam("key") String publicationId, @RequestParam("id") String containerObjectId) {
+        log.info("in ContainerObjectsController - getLatestControllerObject - one object");
+        return containerObjectService.getLatestContainerObject(publicationId, containerObjectId);
+    }
+
+    @Operation(summary = "Delete a containerObject")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted a containerObject", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @PostMapping(value= "/",
+            headers = "userName",
+            params = "key",
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteContainerObject(@RequestHeader("userName") String userName,
+                                      @RequestParam("key") String publicationId,
+                                      @RequestBody List<ContainerObject> containerObjectList) {
+        log.info("in ContainerObjectController - deleteContainerObject");
+        containerObjectService.deleteContainerObject(userName, publicationId, containerObjectList);
+    }
 
 }
