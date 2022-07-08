@@ -14,6 +14,8 @@ import java.util.List;
 public class ContainerObjectService {
     private static final String DELIMITER = "#";
     private static final String LATEST_KEY = "LATEST";
+    private static final String DELETED_KEY = "DELETED";
+
 
     private final ContainerObjectDbHandler containerObjectDbHandler;
 
@@ -23,7 +25,7 @@ public class ContainerObjectService {
 
     public String createContainerObjects(List<ContainerObject> containerObjectsList, String partitionKey) throws CloneNotSupportedException {
 
-        log.info("in the container object service class: init");
+        log.info("in the containerObjectService : init");
 
         List<ContainerObject> containerObjects = createContainerObjectsList(containerObjectsList, partitionKey);
 
@@ -98,11 +100,12 @@ public class ContainerObjectService {
     }
 
     public void addContainerObject(String key, ContainerObject containerObject) throws CloneNotSupportedException {
+        log.info("in the containerObjectService : addContainerObject");
 
         List<ContainerObject> resultListContainerObject = new ArrayList<>();
 
         setVersionKey(containerObject);
-        setPartitionKey(containerObject,key);
+        setPartitionKey(containerObject, key);
 
         resultListContainerObject.add(containerObject);
 
@@ -115,6 +118,57 @@ public class ContainerObjectService {
         containerObjectDbHandler.insertContainerObjects(resultListContainerObject);
 
     }
+
+    public ContainerObject getLatestContainerObject(String publicationId, String containerObjectId) {
+        log.info("in the containerObjectService : getLatestContainerObject");
+
+        String versionKey = CompositionType.CONTAINER_OBJECT.name() + DELIMITER + LATEST_KEY + DELIMITER + containerObjectId;
+
+        List<ContainerObject> containerObjects = containerObjectDbHandler.getContainerObjects(publicationId, versionKey);
+
+        return containerObjects.get(0);
+    }
+
+    // Denna metod ska för varje ContainerObject i listan:
+    // sätta id (publicationId), samt versionKey som ska motsvara en LATEST-versionKey med uuid för aktuellt containerObject.
+    //Anropa delete-metoden i ContainerObjectDBHandler för varje ContainerObject-objekt i listan
+    //Skapa upp en ny versionkey enligt formatet - CompositionType#DELETED#uuid
+    //Dessutom ska ett timestamp samt userName sättas på objektet som ska skrivas ner till databasen
+    //Anropa write-metoden i ContainerObjectDBHandler för varje ContainerObject-objekt i listan
+    public void deleteContainerObject(String userName, String publicationId, List<ContainerObject> containerObjectList) {
+        log.info("in the containerObjectService : deleteContainerObject");
+
+        containerObjectsToDelete(publicationId, containerObjectList);
+        containerObjectDbHandler.deleteContainerObjects(containerObjectList);
+        log.info("containerObjectService : deleteContainerObject - after delete");
+
+        markAsDeleted(containerObjectList, userName);
+        containerObjectDbHandler.insertContainerObjects(containerObjectList);
+        log.info("containerObjectService : deleteContainerObject - after write");
+
+    }
+
+    private void containerObjectsToDelete(String publicationId, List<ContainerObject> containerObjectList) {
+
+        for (ContainerObject containerObject : containerObjectList) {
+            setPartitionKey(containerObject, publicationId);
+            setLatestVersionKey(containerObject);
+        }
+    }
+
+    private void markAsDeleted(List<ContainerObject> containerObjectList, String userName) {
+        for (ContainerObject containerObject : containerObjectList) {
+            setDeletedKey(containerObject);
+            containerObject.setCreated(ServiceUtil.setCreatedTime());
+            containerObject.setCreatedBy(userName);
+        }
+    }
+
+    private void setDeletedKey(ContainerObject containerObject) {
+        containerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER +
+                DELETED_KEY + DELIMITER + containerObject.getUuid());
+    }
+
 }
 
 

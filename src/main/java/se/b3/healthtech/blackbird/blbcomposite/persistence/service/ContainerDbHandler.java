@@ -24,7 +24,7 @@ public class ContainerDbHandler {
         this.containerTable = containerTable;
     }
 
-    public void insertContainers(List<Container> containerList){
+    public void insertContainers(List<Container> containerList) {
         log.info("writeContainers");
         WriteBatch.Builder subBatchBuilder = WriteBatch.builder(Container.class).mappedTableResource(containerTable);
         containerList.forEach(subBatchBuilder::addPutItem);
@@ -52,6 +52,17 @@ public class ContainerDbHandler {
             log.info("ContainerId: {}", container.getUuid());
         }
         return containerList;
+    }
+
+    public void deleteContainers(List<Container> containerList) {
+        log.info("deleteContainers");
+        WriteBatch.Builder subBatchBuilder = WriteBatch.builder(Container.class).mappedTableResource(containerTable);
+        containerList.forEach(subBatchBuilder::addDeleteItem);
+
+        BatchWriteItemEnhancedRequest.Builder batchWriteItemEnhancedRequest = BatchWriteItemEnhancedRequest.builder();
+        batchWriteItemEnhancedRequest.addWriteBatch(subBatchBuilder.build());
+        dynamoDbEnhancedClient.batchWriteItem(batchWriteItemEnhancedRequest.build());
+        System.out.println("done");
     }
 
 }

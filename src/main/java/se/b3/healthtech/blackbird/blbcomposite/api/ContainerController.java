@@ -24,7 +24,6 @@ public class ContainerController {
         this.containerService = containerService;
     }
 
-
     @Operation(summary = "Create a new container list")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created a container list", content = {@Content}),
@@ -79,12 +78,28 @@ public class ContainerController {
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
     @GetMapping(value = "/",
-            params = {"key", "containerId"},
+            params = {"key", "id"},
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
-    public Container getLatestContainer(@RequestParam("key") String key, @RequestParam("containerId") String containerId) {
+    public Container getLatestContainer(@RequestParam("key") String key, @RequestParam("id") String containerId) {
         log.info("in ContainerController - getLatestContainer");
         return containerService.getLatestContainer(key, containerId);
+    }
+
+    @Operation(summary = "Delete a container with a specific partitionKey")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted a container", content = {@Content}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
+    @PostMapping(value= "/",
+            headers = "userName",
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteContainer(@RequestHeader("userName") String userName,
+                                @RequestParam String publicationId,
+                                @RequestBody List<Container> containersList)  {
+        log.info("in ContainerController - deleteContainer");
+        containerService.deleteContainer(userName, publicationId, containersList);
     }
 
 }
