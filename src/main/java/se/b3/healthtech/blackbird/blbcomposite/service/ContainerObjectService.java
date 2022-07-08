@@ -153,6 +153,7 @@ public class ContainerObjectService {
         for (ContainerObject containerObject : containerObjectList) {
             setPartitionKey(containerObject, publicationId);
             setLatestVersionKey(containerObject);
+            log.info("id: " + containerObject.getVersionKey());
         }
     }
 
@@ -161,6 +162,8 @@ public class ContainerObjectService {
             setDeletedKey(containerObject);
             containerObject.setCreated(ServiceUtil.setCreatedTime());
             containerObject.setCreatedBy(userName);
+            log.info("id: " + containerObject.getVersionKey());
+
         }
     }
 

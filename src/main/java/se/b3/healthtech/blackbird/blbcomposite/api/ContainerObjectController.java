@@ -90,10 +90,11 @@ public class ContainerObjectController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
     @PostMapping(value= "/",
             headers = "userName",
+            params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteContainerObject(@RequestHeader("userName") String userName,
-                                      @RequestParam String publicationId,
+                                      @RequestParam("key") String publicationId,
                                       @RequestBody List<ContainerObject> containerObjectList) {
         log.info("in ContainerObjectController - deleteContainerObject");
         containerObjectService.deleteContainerObject(userName, publicationId, containerObjectList);
