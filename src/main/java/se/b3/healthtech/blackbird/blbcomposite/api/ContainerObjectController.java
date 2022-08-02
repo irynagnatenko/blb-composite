@@ -83,7 +83,7 @@ public class ContainerObjectController {
         return containerObjectService.getLatestContainerObject(publicationId, containerObjectId);
     }
 
-    @Operation(summary = "Delete a containerObject")
+    @Operation(summary = "Delete a list of containerObject")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted a containerObject", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
@@ -93,11 +93,29 @@ public class ContainerObjectController {
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
-    public void deleteContainerObject(@RequestHeader("userName") String userName,
+    public void deleteContainerObjects(@RequestHeader("userName") String userName,
                                       @RequestParam("key") String publicationId,
                                       @RequestBody List<ContainerObject> containerObjectList) {
         log.info("in ContainerObjectController - deleteContainerObject");
         containerObjectService.deleteContainerObject(userName, publicationId, containerObjectList);
     }
 
+    // for deleteContainer
+    @Operation(summary = "Get Container Objects By Uuids for a specific partitionKey")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Container Objects",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject.class))}),
+            @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @GetMapping(value = "/selected/",
+            params = {"key", "uuids"},
+            produces = {"application/json"})
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ContainerObject> getContainerObjectsByUuids(@RequestParam("key") String publicationId,
+                                                            @RequestParam("uuids") List<String> uuids) { // not RequestBody???
+        log.info("in ContainerObjectsController - getContainerObjectsByUuids");
+        log.info("Lista " + uuids.size() + " " + uuids);
+        return containerObjectService.getContainerObjectsByUuids(publicationId, uuids);
+    }
 }

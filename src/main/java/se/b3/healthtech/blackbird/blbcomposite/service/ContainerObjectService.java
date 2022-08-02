@@ -6,6 +6,7 @@ import se.b3.healthtech.blackbird.blbcomposite.domain.ContainerObject;
 import se.b3.healthtech.blackbird.blbcomposite.enums.CompositionType;
 import se.b3.healthtech.blackbird.blbcomposite.persistence.service.ContainerObjectDbHandler;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class ContainerObjectService {
     }
 
     public List<ContainerObject> createContainerObjectsList(List<ContainerObject> containerObjectList, String partititonKey) throws CloneNotSupportedException {
+        log.info("in the containerObjectService : createContainerObjectsList ");
+
         List<ContainerObject> containerObjectsList = new ArrayList<>();
         log.info("1. " + containerObjectList.size() + " " + containerObjectList);
 
@@ -42,22 +45,26 @@ public class ContainerObjectService {
             setPartitionKey(containerObject, partititonKey);
             setVersionKey(containerObject);
 
-            log.info("2. " + containerObjectList.size() + " " + containerObjectsList);
-
         }
         containerObjectsList.addAll(containerObjectList);
-        log.info("3. " + containerObjectsList.size() + " " + containerObjectsList);
+        log.info("2. " + containerObjectList.size() + " " + containerObjectsList);
 
-        for (ContainerObject containerObject : containerObjectList) {
-            ContainerObject clonedContainerObject = cloneContainerObject(containerObject);
-            setLatestVersionKey(clonedContainerObject);
-            containerObjectsList.add(clonedContainerObject);
-        }
-        log.info("4. " + containerObjectsList.size() + " " + containerObjectsList);
+        List<ContainerObject> clonedContainerObjectsList = cloneContainerObjectsList(containerObjectList);
+        getLatestVersionKey(clonedContainerObjectsList);
+
+        containerObjectsList.addAll(clonedContainerObjectsList);
+
+        log.info("3. " + containerObjectsList.size() + " " + containerObjectsList);
 
         return containerObjectsList;
     }
 
+    private void getLatestVersionKey(List<ContainerObject> containerObjectsList) {
+        for (ContainerObject containerObject : containerObjectsList) {
+            containerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER +
+                    LATEST_KEY + DELIMITER + containerObject.getUuid());
+        }
+    }
     private void setLatestVersionKey(ContainerObject containerObject) {
         containerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER +
                 LATEST_KEY + DELIMITER + containerObject.getUuid());
@@ -68,17 +75,15 @@ public class ContainerObjectService {
         return clonedContainerObject;
     }
 
-    /*
-    private void setVersionKeyList(List<ContainerObject> containerObjectList) {
+    public List<ContainerObject> cloneContainerObjectsList(@NotNull List<ContainerObject> containerObjectList) throws CloneNotSupportedException {
+        log.info("In the cloneContainerObjectsList method");
+        List<ContainerObject> clonedContainerObjectsList = new ArrayList<>();
         for (ContainerObject containerObject : containerObjectList) {
-            containerObject.setVersionKey(
-                    CompositionType.CONTAINER_OBJECT + DELIMITER + containerObject.getUuid() +
-                            DELIMITER + "V" + containerObject.getVersionNumber() +
-                            DELIMITER + "C" + containerObject.getCommitNumber()
-            );
+            ContainerObject clonedContainerObject = (ContainerObject) containerObject.clone();
+            clonedContainerObjectsList.add(clonedContainerObject);
         }
+        return clonedContainerObjectsList;
     }
-     */
 
     private void setVersionKey(ContainerObject containerObject) {
         containerObject.setVersionKey(
@@ -88,6 +93,7 @@ public class ContainerObjectService {
         );
     }
 
+    // TODO: should I change version Key to the following so that I can use the same method in multiple places?
     public List<ContainerObject> getLatestContainerObjects(String key) {
         String versionKey = CompositionType.CONTAINER_OBJECT.name() + DELIMITER + LATEST_KEY;
         return containerObjectDbHandler.getContainerObjects(key, versionKey);
@@ -170,6 +176,41 @@ public class ContainerObjectService {
     private void setDeletedKey(ContainerObject containerObject) {
         containerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER +
                 DELETED_KEY + DELIMITER + containerObject.getUuid());
+    }
+
+    // Skapa upp en tom List<ContainerObject>
+    //för varje uuid i listan
+    //sätt versionKey enligt:
+    //CompositionType.CONTAINEROBJECT#LATEST#<uuid>
+    //anropa databasen - getContainerObjects med key och versionKey
+    //lägg svaret från i databasen i listan av ContainerObject
+    //returnera Lista av ContainerOjbect
+    public List<ContainerObject> getContainerObjectsByUuids(String publicationId, List<String> uuids) {
+        log.info("ContainerObjectService: getContainerObjectsByUuids ");
+
+        List<ContainerObject> containerObjectList = new ArrayList<>();
+
+        for (String uuid : uuids) {
+            ContainerObject containerObject = getContainerObject(publicationId, uuid);
+            containerObjectList.add(containerObject);
+        }
+        log.info("The list of container objects:" + containerObjectList);
+
+        return containerObjectList;
+    }
+
+    public ContainerObject getContainerObject(String key, String uuid) {
+        log.info("ContainerObjectService: getContainerObject");
+
+        log.info("Key: " + key);
+        log.info("uuid: " + uuid);
+        String versionKey = CompositionType.CONTAINER_OBJECT.name() + DELIMITER + LATEST_KEY + DELIMITER + uuid;
+        log.info("versions nyckel " + versionKey);
+
+        List<ContainerObject> containerObjects = containerObjectDbHandler.getContainerObjects(key, versionKey);
+        log.info("Lista: " + containerObjects.size());
+        log.info("container object" + containerObjects.get(0));
+        return containerObjects.get(0);
     }
 
 }

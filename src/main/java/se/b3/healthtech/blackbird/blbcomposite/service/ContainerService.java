@@ -146,8 +146,8 @@ public class ContainerService {
     //Skapa upp en ny versionkey enligt formatet - CompositionType#DELETED#uuid
     //Dessutom ska ett timestamp samt userName sättas på objektet som ska skrivas ner till databasen
     //Anropa write-metoden i ContainerDBHandler för varje Container-objekt i listan
-    public void deleteContainer(String userName, String publicationId, List<Container> containersList) {
-        log.info("in the containerService : deleteContainer");
+    public void deleteContainers(String userName, String publicationId, List<Container> containersList) {
+        log.info("in the containerService : deleteContainers");
         containersToDelete(publicationId, containersList);
         containerDbHandler.deleteContainers(containersList);
         markAsDeleted(containersList, userName);
@@ -158,6 +158,7 @@ public class ContainerService {
         for (Container container : containerList) {
             setPartitionKey(container, publicationId);
             setLatestVersionKey(container);
+            log.info(container.getVersionKey());
         }
     }
 
@@ -166,6 +167,7 @@ public class ContainerService {
             setDeletedKey(container);
             container.setCreated(ServiceUtil.setCreatedTime());
             container.setCreatedBy(userName);
+            log.info(container.getVersionKey());
         }
     }
 
