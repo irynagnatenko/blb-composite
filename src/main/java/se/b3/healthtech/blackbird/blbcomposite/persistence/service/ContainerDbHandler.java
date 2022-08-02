@@ -32,7 +32,7 @@ public class ContainerDbHandler {
         BatchWriteItemEnhancedRequest.Builder batchWriteItemEnhancedRequest = BatchWriteItemEnhancedRequest.builder();
         batchWriteItemEnhancedRequest.addWriteBatch(subBatchBuilder.build());
         dynamoDbEnhancedClient.batchWriteItem(batchWriteItemEnhancedRequest.build());
-        System.out.println("done");
+        System.out.println("writeContainers done");
     }
 
     // partitionKey är ID:t på compositionen. Det är det som kommer från Swagger, dvs det som returneras av cretePublication metoden
@@ -62,7 +62,7 @@ public class ContainerDbHandler {
         BatchWriteItemEnhancedRequest.Builder batchWriteItemEnhancedRequest = BatchWriteItemEnhancedRequest.builder();
         batchWriteItemEnhancedRequest.addWriteBatch(subBatchBuilder.build());
         dynamoDbEnhancedClient.batchWriteItem(batchWriteItemEnhancedRequest.build());
-        System.out.println("done");
+        System.out.println("deleteContainers done");
     }
 
 }

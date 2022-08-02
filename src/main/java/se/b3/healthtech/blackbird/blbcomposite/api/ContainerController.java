@@ -67,8 +67,6 @@ public class ContainerController {
         containerService.addContainer(key, request);
     }
 
-    // anropa addContainer istället av /update endpoint
-
     // For addContent
     @Operation(summary = "Get the latest container for a specific partitionKey")
     @ApiResponses(value = {
@@ -86,20 +84,21 @@ public class ContainerController {
         return containerService.getLatestContainer(key, containerId);
     }
 
-    @Operation(summary = "Delete a container with a specific partitionKey")
+    @Operation(summary = "Delete a list of containers with a specific partitionKey")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully deleted a container", content = {@Content}),
+            @ApiResponse(responseCode = "200", description = "Successfully deleted containers", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/",
+    @PostMapping(value= "/delete/",
             headers = "userName",
+            params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
-    public void deleteContainer(@RequestHeader("userName") String userName,
-                                @RequestParam String publicationId,
+    public void deleteContainers(@RequestHeader("userName") String userName,
+                                @RequestParam("key") String publicationId,
                                 @RequestBody List<Container> containersList)  {
         log.info("in ContainerController - deleteContainer");
-        containerService.deleteContainer(userName, publicationId, containersList);
+        containerService.deleteContainers(userName, publicationId, containersList);
     }
 
 }
