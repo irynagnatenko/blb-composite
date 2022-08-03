@@ -140,12 +140,6 @@ public class ContainerService {
         return containerList.get(0);
     }
 
-    // Denna metod ska för varje Container i listan:
-    // sätta id (publicationId), samt versionKey som ska motsvara en LATEST-versionKey med uuid för aktuellt container.
-    //Anropa delete-metoden i ContainerDBHandler för varje Container-objekt i listan
-    //Skapa upp en ny versionkey enligt formatet - CompositionType#DELETED#uuid
-    //Dessutom ska ett timestamp samt userName sättas på objektet som ska skrivas ner till databasen
-    //Anropa write-metoden i ContainerDBHandler för varje Container-objekt i listan
     public void deleteContainers(String userName, String publicationId, List<Container> containersList) {
         log.info("in the containerService : deleteContainers");
         containersToDelete(publicationId, containersList);

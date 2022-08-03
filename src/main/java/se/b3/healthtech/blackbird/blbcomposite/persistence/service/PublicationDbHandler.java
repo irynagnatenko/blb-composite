@@ -26,7 +26,7 @@ public class PublicationDbHandler {
         this.publicationTable = publicationTable;
     }
 
-    public void insertPublications(List<Publication> publicationList){
+    public void insertPublications(List<Publication> publicationList) {
         log.info("writePublications");
         WriteBatch.Builder subBatchBuilder = WriteBatch.builder(Publication.class).mappedTableResource(publicationTable);
         publicationList.forEach(subBatchBuilder::addPutItem);

@@ -39,11 +39,11 @@ public class PublicationService {
         publication.setId(publication.getUuid());
         publication.setVersionNumber(1);
         publication.setCommitNumber(1);
-        publication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + publication.getUuid() + DELIMITER +"V" + publication.getVersionNumber() + DELIMITER + "C" + publication.getCommitNumber());
+        publication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + publication.getUuid() + DELIMITER + "V" + publication.getVersionNumber() + DELIMITER + "C" + publication.getCommitNumber());
         publicationList.add(publication);
 
         Publication clonePublication = (Publication) publication.clone();
-        clonePublication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + LATEST_KEY+ DELIMITER + publication.getUuid());
+        clonePublication.setVersionKey(CompositionType.COMPOSITION + DELIMITER + LATEST_KEY + DELIMITER + publication.getUuid());
         publicationList.add(clonePublication);
 
         return publicationList;
@@ -66,7 +66,7 @@ public class PublicationService {
         publicationDbHandler.insertPublications(publicationList);
     }
 
-    private void publicationToDelete (String publicationId, List<Publication> publicationList) {
+    private void publicationToDelete(String publicationId, List<Publication> publicationList) {
         log.info("in the publicationService : publicationToDelete");
 
         for (Publication publication : publicationList) {
@@ -94,8 +94,9 @@ public class PublicationService {
     }
 
     private void setLatestVersionKey(Publication publication) {
-        publication.setVersionKey(CompositionType.CONTAINER + DELIMITER + LATEST_KEY + DELIMITER + publication.getUuid());
+        publication.setVersionKey(CompositionType.COMPOSITION.name() + DELIMITER + LATEST_KEY + DELIMITER + publication.getUuid());
     }
+
     private void setDeletedKey(Publication publication) {
         publication.setVersionKey(CompositionType.COMPOSITION.name() + DELIMITER + DELETED_KEY + DELIMITER + publication.getUuid());
     }
