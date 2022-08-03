@@ -28,8 +28,8 @@ public class ContainerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created a container list", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/all/",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @PostMapping(value = "/all/",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
     public void createContainers(@RequestParam("key") String partitionKey, @RequestBody List<Container> containers) throws CloneNotSupportedException {
@@ -57,8 +57,8 @@ public class ContainerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully added a container", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @PostMapping(value = "/",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
@@ -88,15 +88,15 @@ public class ContainerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted containers", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/delete/",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @PostMapping(value = "/delete/",
             headers = "userName",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteContainers(@RequestHeader("userName") String userName,
-                                @RequestParam("key") String publicationId,
-                                @RequestBody List<Container> containersList)  {
+                                 @RequestParam("key") String publicationId,
+                                 @RequestBody List<Container> containersList) {
         log.info("in ContainerController - deleteContainer");
         containerService.deleteContainers(userName, publicationId, containersList);
     }

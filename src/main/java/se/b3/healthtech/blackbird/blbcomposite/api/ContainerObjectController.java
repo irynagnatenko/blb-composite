@@ -28,8 +28,8 @@ public class ContainerObjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created a list of containerObjects", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/all",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @PostMapping(value = "/all",
             params = {"key"})
     @ResponseStatus(value = HttpStatus.OK)
     public void createContainerObjects(@RequestParam("key") String partitionKey, @RequestBody List<ContainerObject> containerObjects) throws CloneNotSupportedException {
@@ -57,8 +57,8 @@ public class ContainerObjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created a containerObject", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @PostMapping(value = "/",
             params = {"key"},
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
@@ -75,7 +75,7 @@ public class ContainerObjectController {
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
     @GetMapping(value = "/",
-            params = {"key","id"},
+            params = {"key", "id"},
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public ContainerObject getLatestContainerObject(@RequestParam("key") String publicationId, @RequestParam("id") String containerObjectId) {
@@ -87,15 +87,15 @@ public class ContainerObjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted a containerObject", content = {@Content}),
             @ApiResponse(responseCode = "404", description = "Object not found", content = {@Content}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})   })
-    @PostMapping(value= "/",
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = {@Content})})
+    @PostMapping(value = "/",
             headers = "userName",
             params = "key",
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteContainerObjects(@RequestHeader("userName") String userName,
-                                      @RequestParam("key") String publicationId,
-                                      @RequestBody List<ContainerObject> containerObjectList) {
+                                       @RequestParam("key") String publicationId,
+                                       @RequestBody List<ContainerObject> containerObjectList) {
         log.info("in ContainerObjectController - deleteContainerObject");
         containerObjectService.deleteContainerObject(userName, publicationId, containerObjectList);
     }
@@ -113,7 +113,7 @@ public class ContainerObjectController {
             produces = {"application/json"})
     @ResponseStatus(value = HttpStatus.OK)
     public List<ContainerObject> getContainerObjectsByUuids(@RequestParam("key") String publicationId,
-                                                            @RequestParam("uuids") List<String> uuids) { // not RequestBody???
+                                                            @RequestParam("uuids") List<String> uuids) {
         log.info("in ContainerObjectsController - getContainerObjectsByUuids");
         log.info("Lista " + uuids.size() + " " + uuids);
         return containerObjectService.getContainerObjectsByUuids(publicationId, uuids);

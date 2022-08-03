@@ -26,7 +26,7 @@ public class PublicationDbHandler {
         this.publicationTable = publicationTable;
     }
 
-    public void insertPublications(List<Publication> publicationList){
+    public void insertPublications(List<Publication> publicationList) {
         log.info("writePublications");
         WriteBatch.Builder subBatchBuilder = WriteBatch.builder(Publication.class).mappedTableResource(publicationTable);
         publicationList.forEach(subBatchBuilder::addPutItem);
@@ -50,5 +50,16 @@ public class PublicationDbHandler {
             log.info("PublicationId: {}", publication.getUuid());
         }
         return publicationsList;
+    }
+
+    public void deletePublications(List<Publication> publicationList) {
+        log.info("DBhandler - deletePublications");
+        WriteBatch.Builder subBatchBuilder = WriteBatch.builder(Publication.class).mappedTableResource(publicationTable);
+        publicationList.forEach(subBatchBuilder::addDeleteItem);
+
+        BatchWriteItemEnhancedRequest.Builder batchWriteItemEnhancedRequest = BatchWriteItemEnhancedRequest.builder();
+        batchWriteItemEnhancedRequest.addWriteBatch(subBatchBuilder.build());
+        dynamoDbEnhancedClient.batchWriteItem(batchWriteItemEnhancedRequest.build());
+        System.out.println("deleteContainerObjects - done");
     }
 }

@@ -65,6 +65,7 @@ public class ContainerObjectService {
                     LATEST_KEY + DELIMITER + containerObject.getUuid());
         }
     }
+
     private void setLatestVersionKey(ContainerObject containerObject) {
         containerObject.setVersionKey(CompositionType.CONTAINER_OBJECT + DELIMITER +
                 LATEST_KEY + DELIMITER + containerObject.getUuid());
@@ -93,7 +94,6 @@ public class ContainerObjectService {
         );
     }
 
-    // TODO: should I change version Key to the following so that I can use the same method in multiple places?
     public List<ContainerObject> getLatestContainerObjects(String key) {
         String versionKey = CompositionType.CONTAINER_OBJECT.name() + DELIMITER + LATEST_KEY;
         return containerObjectDbHandler.getContainerObjects(key, versionKey);
@@ -135,12 +135,6 @@ public class ContainerObjectService {
         return containerObjects.get(0);
     }
 
-    // Denna metod ska för varje ContainerObject i listan:
-    // sätta id (publicationId), samt versionKey som ska motsvara en LATEST-versionKey med uuid för aktuellt containerObject.
-    //Anropa delete-metoden i ContainerObjectDBHandler för varje ContainerObject-objekt i listan
-    //Skapa upp en ny versionkey enligt formatet - CompositionType#DELETED#uuid
-    //Dessutom ska ett timestamp samt userName sättas på objektet som ska skrivas ner till databasen
-    //Anropa write-metoden i ContainerObjectDBHandler för varje ContainerObject-objekt i listan
     public void deleteContainerObject(String userName, String publicationId, List<ContainerObject> containerObjectList) {
         log.info("in the containerObjectService : deleteContainerObject");
 
@@ -178,13 +172,6 @@ public class ContainerObjectService {
                 DELETED_KEY + DELIMITER + containerObject.getUuid());
     }
 
-    // Skapa upp en tom List<ContainerObject>
-    //för varje uuid i listan
-    //sätt versionKey enligt:
-    //CompositionType.CONTAINEROBJECT#LATEST#<uuid>
-    //anropa databasen - getContainerObjects med key och versionKey
-    //lägg svaret från i databasen i listan av ContainerObject
-    //returnera Lista av ContainerOjbect
     public List<ContainerObject> getContainerObjectsByUuids(String publicationId, List<String> uuids) {
         log.info("ContainerObjectService: getContainerObjectsByUuids ");
 
