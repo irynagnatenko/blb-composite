@@ -51,4 +51,15 @@ public class PublicationDbHandler {
         }
         return publicationsList;
     }
+
+    public void deletePublications(List<Publication> publicationList) {
+        log.info("DBhandler - deletePublications");
+        WriteBatch.Builder subBatchBuilder = WriteBatch.builder(Publication.class).mappedTableResource(publicationTable);
+        publicationList.forEach(subBatchBuilder::addDeleteItem);
+
+        BatchWriteItemEnhancedRequest.Builder batchWriteItemEnhancedRequest = BatchWriteItemEnhancedRequest.builder();
+        batchWriteItemEnhancedRequest.addWriteBatch(subBatchBuilder.build());
+        dynamoDbEnhancedClient.batchWriteItem(batchWriteItemEnhancedRequest.build());
+        System.out.println("deleteContainerObjects - done");
+    }
 }
