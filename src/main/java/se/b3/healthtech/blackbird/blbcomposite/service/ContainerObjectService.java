@@ -94,7 +94,6 @@ public class ContainerObjectService {
         );
     }
 
-    // TODO: should I change version Key to the following so that I can use the same method in multiple places?
     public List<ContainerObject> getLatestContainerObjects(String key) {
         String versionKey = CompositionType.CONTAINER_OBJECT.name() + DELIMITER + LATEST_KEY;
         return containerObjectDbHandler.getContainerObjects(key, versionKey);
